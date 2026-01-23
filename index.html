@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daniel Rustamov | Logo AI & Portfolio</title>
+    <title>Daniel Rustamov | AI Brand Detector</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --bg: #020617;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #00f2ff; /* Основной неоновый цвет */
+            --secondary: #7000ff; /* Дополнительный фиолетовый */
+            --bg: #020617; /* Темный фон */
+            --glass: rgba(255, 255, 255, 0.03); /* Прозрачный стеклянный фон */
+            --glass-border: rgba(255, 255, 255, 0.1); /* Граница стеклянных элементов */
+            --success-color: #00ff88; /* Зеленый для успеха */
+            --fail-color: #ff4444; /* Красный для подделки */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s ease; }
@@ -21,6 +23,7 @@
             background-color: var(--bg);
             color: white;
             min-height: 100vh;
+            overflow-x: hidden;
             background-image: 
                 radial-gradient(circle at 10% 10%, rgba(112, 0, 255, 0.1) 0%, transparent 40%),
                 radial-gradient(circle at 90% 90%, rgba(0, 242, 255, 0.1) 0%, transparent 40%);
@@ -32,6 +35,7 @@
         .logo-text { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; letter-spacing: 4px; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .sub-header { color: #94a3b8; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
 
+        /* NAV BUTTONS */
         .main-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
         .nav-card {
             background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(15px);
@@ -41,10 +45,12 @@
         .nav-card.active { border-color: var(--primary); background: rgba(0, 242, 255, 0.07); }
         .nav-card h2 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; }
 
+        /* SECTIONS */
         .page-section { display: none; animation: slideIn 0.5s ease forwards; }
         .page-section.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* DETECTOR UI */
         .detector-ui { background: var(--glass); border-radius: 25px; border: 1px solid var(--glass-border); padding: 30px; text-align: center; }
         .scan-window { 
             width: 100%; max-width: 450px; height: 280px; margin: 0 auto 25px;
@@ -52,9 +58,19 @@
             display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
             background: rgba(0,0,0,0.2);
         }
-        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--primary); box-shadow: 0 0 15px var(--primary); display: none; animation: scanLoop 2s infinite linear; }
-        @keyframes scanLoop { 0% { top: 0; } 100% { top: 100%; } }
+        .scan-line { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 4px; 
+            background: linear-gradient(to right, transparent, var(--primary), transparent); 
+            box-shadow: 0 0 15px var(--primary); display: none; 
+            animation: scanLoop 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes scanLoop { 
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0; }
+        }
 
+        /* PORTFOLIO GRID */
         .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
         .video-card { background: var(--glass); border-radius: 18px; padding: 12px; border: 1px solid var(--glass-border); }
         .video-wrapper { width: 100%; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: #000; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; }
@@ -65,6 +81,7 @@
 
         .btn-action { background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; border: none; padding: 14px 35px; border-radius: 50px; font-family: 'Orbitron', sans-serif; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 0.9rem; }
 
+        /* FOOTER */
         .footer-info { margin-top: 40px; padding: 25px; background: var(--glass); border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); }
         .contact-links { margin-top: 15px; }
         .contact-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-size: 0.9rem; font-weight: 500; }
@@ -82,10 +99,10 @@
 
         <div class="main-nav">
             <div class="nav-card active" onclick="switchTab('detector', this)">
-                <h2>AI ДЕТЕКТОР</h2>
+                <h2>AI ДЕТЕКТОР БРЕНДОВ</h2>
             </div>
             <div class="nav-card" onclick="switchTab('portfolio', this)">
-                <h2>ПОРТФОЛИО</h2>
+                <h2>ПОРТФОЛИО ПРОЕКТОВ</h2>
             </div>
         </div>
 
@@ -93,11 +110,11 @@
             <div class="detector-ui">
                 <div class="scan-window" onclick="document.getElementById('fileInput').click()">
                     <div class="scan-line" id="scanLine"></div>
-                    <div id="dropText"><p>Кликни, чтобы загрузить логотип</p></div>
+                    <div id="dropText"><p>Кликни, чтобы загрузить логотип для анализа</p></div>
                     <img id="preview" style="display:none; width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <input type="file" id="fileInput" hidden accept="image/*" onchange="handleFile(this.files[0])">
-                <button class="btn-action" onclick="runAnalysis()">ЗАПУСТИТЬ СКАНЕР</button>
+                <button class="btn-action" onclick="runAnalysis()">ЗАПУСТИТЬ АНАЛИЗ AI</button>
                 <div id="status" style="margin-top: 15px; font-weight: bold; font-family: 'Orbitron'; font-size: 0.8rem;"></div>
             </div>
         </section>
@@ -106,16 +123,23 @@
             <div class="video-grid">
                 <div class="video-card">
                     <div class="video-wrapper">
-                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VhYT_IdYoK4" frameborder="0" allowfullscreen></iframe>
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/T0gvqGBZt_0" frameborder="0" allowfullscreen></iframe>
                     </div>
                     <p style="text-align:center; font-size:0.7rem; margin-top:10px; color:var(--primary);">МОЙ ПРОЕКТ №1</p>
                 </div>
                 
                 <div class="video-card">
                     <div class="video-wrapper">
-                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ROeQnYrE1tk" frameborder="0" allowfullscreen></iframe>
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/03KSzlgUWj4" frameborder="0" allowfullscreen></iframe>
                     </div>
                     <p style="text-align:center; font-size:0.7rem; margin-top:10px; color:var(--primary);">МОЙ ПРОЕКТ №2</p>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/IG4wFxm96jo" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <p style="text-align:center; font-size:0.7rem; margin-top:10px; color:var(--primary);">МОЙ ПРОЕКТ №3</p>
                 </div>
 
                 <div class="video-card"><div class="video-wrapper"><div class="waiting-status"><p>ИДЕТ ЗАПИСЬ...</p></div></div></div>
@@ -124,7 +148,6 @@
                 <div class="video-card"><div class="video-wrapper"><div class="waiting-status"><p>ИДЕТ ЗАПИСЬ...</p></div></div></div>
                 <div class="video-card"><div class="video-wrapper"><div class="waiting-status"><p>RECORDING...</p></div></div></div>
                 <div class="video-card"><div class="video-wrapper"><div class="waiting-status"><p>LOADING...</p></div></div></div>
-                <div class="video-card"><div class="video-wrapper"><div class="waiting-status"><p>ИДЕТ ЗАПИСЬ...</p></div></div></div>
                 <div class="video-card"><div class="video-wrapper"><div class="waiting-status"><p>PENDING...</p></div></div></div>
             </div>
 
@@ -155,24 +178,32 @@
                     document.getElementById('preview').src = e.target.result;
                     document.getElementById('preview').style.display = 'block';
                     document.getElementById('dropText').style.display = 'none';
+                    document.getElementById('status').innerHTML = ""; // Очищаем статус
                 }
                 reader.readAsDataURL(file);
             }
         }
 
         function runAnalysis() {
-            if (!document.getElementById('fileInput').files[0]) return alert("Сначала выбери файл!");
+            if (!document.getElementById('fileInput').files[0]) return alert("Сначала выбери файл для анализа!");
             const line = document.getElementById('scanLine');
             const status = document.getElementById('status');
             line.style.display = 'block';
-            status.innerHTML = "ANALYZING DATA...";
-            status.style.color = "var(--primary)";
+            status.innerHTML = "НЕЙРОСЕТЬ ОБУЧАЕТСЯ И АНАЛИЗИРУЕТ ДАННЫЕ...";
+            status.style.color = "#94a3b8"; // Цвет для процесса
 
             setTimeout(() => {
                 line.style.display = 'none';
-                const res = ["✅ ORIGINAL BRAND", "❌ DUPLICATE DETECTED", "⚠️ LOW UNIQUENESS"];
-                status.innerHTML = res[Math.floor(Math.random() * res.length)];
-            }, 2500);
+                // Случайный результат: 70% шанс на "ОРИГИНАЛЬНЫЙ БРЕНД", 30% на "ПОДДЕЛКА"
+                const isOriginal = Math.random() < 0.7; // 70% шанс на оригинал
+                if (isOriginal) {
+                    status.innerHTML = "✅ ВЕРДИКТ: ОРИГИНАЛЬНЫЙ БРЕНД";
+                    status.style.color = var(--success-color); // Зеленый
+                } else {
+                    status.innerHTML = "❌ ВЕРДИКТ: ПОДДЕЛКА. ОБНАРУЖЕНЫ СОВПАДЕНИЯ";
+                    status.style.color = var(--fail-color); // Красный
+                }
+            }, 3500); // Увеличил время анализа для реалистичности
         }
     </script>
 </body>
